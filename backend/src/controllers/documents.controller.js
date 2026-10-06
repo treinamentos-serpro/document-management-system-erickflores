@@ -8,7 +8,7 @@ if (!Number.isSafeInteger(maxFileSize) || maxFileSize <= 0) {
 
 const receiveUpload = multer({
   storage: service.createUploadStorage(),
-  limits: { fileSize: maxFileSize, files: 1 },
+  limits: { fileSize: maxFileSize + 1, files: 1 },
 }).single('file');
 
 function sendError(res, status, code, message) {
