@@ -1,16 +1,6 @@
 const multer = require('multer');
 const service = require('../services/documents.service');
 
-const maxFileSize = Number(process.env.MAX_FILE_SIZE_BYTES || 10485760);
-if (!Number.isSafeInteger(maxFileSize) || maxFileSize <= 0) {
-  throw new Error('MAX_FILE_SIZE_BYTES deve ser um inteiro positivo.');
-}
-
-const receiveUpload = multer({
-  storage: service.createUploadStorage(),
-  limits: { fileSize: maxFileSize + 1, files: 1 },
-}).single('file');
-
 function sendError(res, status, code, message) {
   return res.status(status).json({ error: { code, message } });
 }
@@ -69,4 +59,4 @@ function handleError(error, req, res, next) {
   return sendError(res, 500, 'INTERNAL_ERROR', 'Nao foi possivel concluir a operacao.');
 }
 
-module.exports = { validateOwner, receiveUpload, upload, list, download, handleError };
+module.exports = { validateOwner, upload, list, download, handleError };

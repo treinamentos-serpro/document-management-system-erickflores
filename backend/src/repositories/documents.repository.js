@@ -1,22 +1,8 @@
-const { randomUUID } = require('node:crypto');
 const { mkdir, stat, unlink } = require('node:fs/promises');
 const path = require('node:path');
-const multer = require('multer');
+const { storageDirectory } = require('../config/storage');
 
-const storageDirectory = path.resolve(__dirname, '../../storage');
 const documents = new Map();
-
-function createUploadStorage() {
-  return multer.diskStorage({
-    destination(req, file, callback) {
-      mkdir(storageDirectory, { recursive: true })
-        .then(() => callback(null, storageDirectory), callback);
-    },
-    filename(req, file, callback) {
-      callback(null, randomUUID());
-    },
-  });
-}
 
 function save(document) {
   documents.set(document.id, document);
@@ -48,4 +34,4 @@ async function removeFile(storageName) {
   }
 }
 
-module.exports = { createUploadStorage, save, findByOwner, findById, getFilePath, removeFile };
+module.exports = { save, findByOwner, findById, getFilePath, removeFile };

@@ -44,4 +44,4 @@ async function download(id, owner) {
   }
 }
 
-module.exports = { upload, list, download, createUploadStorage: repository.createUploadStorage };
+module.exports = { upload, list, download };

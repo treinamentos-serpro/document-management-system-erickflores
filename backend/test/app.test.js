@@ -203,6 +203,17 @@ test('contratos da API definidos na especificacao do DMS', async (context) => {
     assert.deepStrictEqual(repository.findByOwner(owner), []);
   });
 
+  await context.test('rejeita campos multipart adicionais sem deixar residuos', async () => {
+    const owner = randomUUID();
+    const before = await readdir(storageDirectory);
+    const body = new FormData();
+    body.append('file', new Blob(['conteudo']), 'documento.txt');
+    body.append('metadata', 'x'.repeat(1024));
+    await assertError(await fetch(`${baseUrl}/upload`, { method: 'POST', headers: headersFor(owner), body }), 400, 'INVALID_UPLOAD');
+    assert.deepStrictEqual(await readdir(storageDirectory), before);
+    assert.deepStrictEqual(repository.findByOwner(owner), []);
+  });
+
   await context.test('aceita arquivo imediatamente abaixo do limite configurado', async () => {
     const document = await createDocument(randomUUID(), { content: Buffer.alloc(uploadLimit - 1) });
     assert.strictEqual(document.size, uploadLimit - 1);
